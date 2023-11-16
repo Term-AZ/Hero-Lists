@@ -14,9 +14,7 @@ const db = mysql.createConnection({
 })
 db.connect()
 
-for(var i of superhero_data){
-    // const q = "INSERT INTO superheros(id, hero_name, gender, eye_color, hair_color, height, publisher,skin_color, alignment, hero_weight) VALUES (`${i.id}`, ${i.name},${i.Gender},${i["Eye color"]},${i["Hair color"]},${i.Height},${i.Publisher},${i["Skin color"]},${i.Alignment}, ${i.Weight})"
-    
+for(var i of superhero_data){    
     try{
         if(i.Weight===''){
             i.Weight=0
@@ -26,11 +24,12 @@ for(var i of superhero_data){
     }catch(err){
         console.log(err)
     }
-    //[i.id, i.name,i.Gender,i["Eye color"],i["Hair color"],i.Height,i.Publisher,i["Skin color"],i.Alignment,i.Weight]
-    //(err,result)=>{
-        // if(err){
-        //     console.error(err.message)
-        // }
-        // console.log("Success:  "+ result.affectedRows)
-    //})  
 }
+
+var x = ability_data[0]
+
+for(var i in Object.keys(x)){
+    var q = "INSERT INTO abilities(ability) VALUES ('"+x[i]+"')"
+    db.query(q)
+}
+
