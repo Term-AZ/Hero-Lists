@@ -9,7 +9,7 @@ CREATE TABLE superheros(
     height float(4,2),
     publisher varchar(32),
     skin_color varchar(32),
-    alignment ENUM('good','bad','-'),
+    alignment ENUM('good','bad','-') NOT NULL,
     hero_weight INT,
     PRIMARY KEY (id)
 )
@@ -27,3 +27,4 @@ CREATE TABLE hero_abilities(
     FOREIGN KEY (hero_id) references superheros(id) ON DELETE CASCADE,
     FOREIGN KEY (ability_id) references abilities(id) ON DELETE CASCADE
 )
+

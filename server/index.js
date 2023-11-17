@@ -12,7 +12,7 @@ const port = 8000;
 saved_lists={"test list" : [5,2,4,20,109,300]}
 
 app.get('/data' , (req,res)=>{
-    db.query 
+    
 })
 
 app.get('/api/superhero_data/hero_names', (req,res)=>{
