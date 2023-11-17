@@ -6,10 +6,10 @@ var superhero_data = require('../data/superhero_info.json')
 var ability_data = require('../data/superhero_powers.json')
 
 const db = mysql.createConnection({
-    host:'127.0.0.1',
+    host:'localhost',
     port: '3306',
     user:'root',
-    password: 'Ywy957p3!',
+    password: 'ywy957p3', //for PC US Ywy957p3!
     database: 'superheros'
 })
 db.connect()
