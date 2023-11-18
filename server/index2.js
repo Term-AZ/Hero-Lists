@@ -5,9 +5,9 @@ var app = express();
 const port = 8000;
 
 
-// app.use('/', express.static('../client'))
-// app.use(express.json());
-// app.use(express.urlencoded());
+app.use('/', express.static('../client'))
+app.use(express.json());
+app.use(express.urlencoded());
 
 saved_lists={"test list" : [5,2,4,20,109,300]}
 
