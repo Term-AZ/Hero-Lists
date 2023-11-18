@@ -7,9 +7,9 @@ db = mysql.createConnection({
     database: 'superheros'
 })
 
-con.connect(function(err){
+db.connect(function(err){
     if(err) throw err;
     console.log("Connected!")
 })
 
-module.exports = con
+module.exports = db
