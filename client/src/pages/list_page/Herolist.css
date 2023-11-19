@@ -1,0 +1,84 @@
+li{
+    cursor: pointer;
+    width:100%;
+}
+
+.list_figure{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.div-1{
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+figure{
+    margin:0px;
+}
+
+.list_background{
+    background: linear-gradient(#658e85, #32685c);
+    height:fit-content;
+    min-height:92vh;
+    width:99vw;
+    margin:0px;
+}
+
+.search_container{
+    height:3vh;
+    width:100%;
+}
+.list_view{
+    min-height:20vh;
+    height:fit-content;
+    background-color: rgba(50, 103, 92, 0.4);
+}
+
+ul.data_list{
+    column-count: 4;
+    height:fit-content
+}
+
+.main_list_container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+ul.main_list{
+    column-count: 3;
+    height:fit-content
+}
+
+.dropdown_container{
+    max-height: fit-content;
+    position:relative;
+    width:100%;
+    height:fit-content;
+    transition: max-height 1s
+}
+.dropdown_list{
+    column-count:2;
+    height:fit-content
+}
+.ability_list{
+    column-count:3;
+    height:fit-content
+}
+figure.list_figure{
+    height:fit-content;
+}
+li.drop_down_list_item{
+    display: flex;
+    flex-direction: row;
+}
+ul.publisher_list{
+    column-count:5;
+}
+select.option_dropdown{
+    width:fit-content;
+}
