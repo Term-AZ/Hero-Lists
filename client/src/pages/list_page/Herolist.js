@@ -7,7 +7,7 @@ const Herolist = () =>{
     const [hero_names, set_hero_names] = useState([])
 
     useEffect(()=>{
-        fetch("http://localhost:8000/superheroLists/heros/data",{
+        fetch("http://localhost:8000/superheroLists/heros/data/",{
             method:"GET",
             headers:{"Content-Type":"application/json"},
             credentials: 'include',

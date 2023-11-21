@@ -11,6 +11,11 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+// app.use("/", express.static('../client/public'))
+app.use("/",express.static('../client/build'))
+
+
+
 
 // var corsOptions = {
 //     origin: function (origin, callback) {
@@ -36,8 +41,8 @@ app.post("/user/generateToken", (req,res)=>{
 app.get("/superheroLists/heros/data", function(req,res){
     var q = "SELECT hero_name FROM superheros"
     db.query(q, (err,result, fields)=>{
-        res.setHeader('Access-Control-Allow-Origin',true)
+        // res.set('Access-Control-Allow-Origin', '*');
         res.send(result)
     })
-})
+}) 
 
