@@ -49,3 +49,7 @@ input.submit{
     margin-top:5%;
     color:white !important
 }
+p.error_log{
+    font-size: 1em;
+    color:red
+}

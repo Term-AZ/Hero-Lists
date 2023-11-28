@@ -13,7 +13,11 @@ const Register = () =>{
     }
 
     const handleSubmit = (event)=>{
-        console.log("in here")
+        event.preventDefault();
+        if(inputs.password === inputs.confirm_password){
+        }else{
+            document.getElementById('error_log').innerText = "Passwords do not match!"
+        }
     }
     return(
         <div className='auth_background'>
@@ -43,8 +47,8 @@ const Register = () =>{
                         />
 
                         <input className='submit' type='submit' value='Create Account'></input>
-
-                        <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/superheroLists/login">Already have an account? Login here!</NavLink>
+                        <p className = 'error_log' id="error_log"></p>
+                        <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/SuperheroList/login">Already have an account? Login here!</NavLink>
                     </form>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
+
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -10,27 +11,58 @@ import Footer from './pages/reusables/Footer/Footer';
 import Herolist from './pages/list_page/Herolist';
 import Login from './pages/user_entry/login/Login';
 import Register from './pages/user_entry/register/Register';
+import {AuthProvider} from './context/AuthProvider'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <BrowserRouter>
+ReactDOM.render(
+  <React.StrictMode>
+    <BrowserRouter>
     <NavBar/>
-    <Routes>
-      <Route path="/" element={<Navigate to="/superheroLists/landing"/>}/>
-      <Route  path="/superheroLists" element={<Dashboard/>}>
-        <Route name="default" path="/superheroLists/landing" element={<Landing/>}></Route>
-        <Route path="/superheroLists/login" element={<Login/>}/>
-        <Route path="/superheroLists/register" element={<Register/>}/>
-        <Route path="/superheroLists/list" element={<Herolist/>}/>
-      </Route>
-    </Routes>
-    <Footer/>
-  </BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/*" element={<App />}/>
+        </Routes>
+      </AuthProvider>
+      <Footer/>
+    </BrowserRouter>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+  // <BrowserRouter>
+  //   <NavBar/>
+  //   <AuthProvider>
+  //   <Routes>
+  //     <Route path="/" element={<Navigate to="/superheroLists/landing"/>}/>
+  //     <Route  path="/superheroLists" element={<Dashboard/>}>
+  //       <Route name="default" path="/superheroLists/landing" element={<Landing/>}></Route>
+  //       <Route path="/superheroLists/login" element={<Login/>}/>
+  //       <Route path="/superheroLists/register" element={<Register/>}/>
+  //       <Route path="/superheroLists/list" element={<Herolist/>}/>
+  //     </Route>
+  //   </Routes>
+  //   </AuthProvider>
+  //   <Footer/>
+  // </BrowserRouter>
 
   // <React.StrictMode>
   //   <App />
   // </React.StrictMode>
-)
+// )
 
 function Dashboard(){
   return(

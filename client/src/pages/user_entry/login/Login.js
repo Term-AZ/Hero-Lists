@@ -38,7 +38,7 @@ const Login = () =>{
 
                         <input className='submit' type='submit' value='Login'></input>
 
-                        <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/superheroLists/register">Don't have an account? Create one here!</NavLink>
+                        <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/SuperheroList/register">Don't have an account? Create one here!</NavLink>
                     </form>
                 </div>
             </div>
