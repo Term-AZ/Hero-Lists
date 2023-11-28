@@ -8,15 +8,13 @@ const NavBar = () => {
             <div className='nav_container'>
                 <ul className='navbar_list'>
                     <li className='navbar_list_items'>
-                        <NavLink className="nav_link" to="/superheroLists/landing">Home</NavLink>
+                        <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/landing">Home</NavLink>
                     </li>
                     <li className='navbar_list_items'>
-                        <NavLink className="nav_link" to="/superheroLists/list">Superhero List</NavLink>
+                        <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/list">Superhero List</NavLink>
                     </li>
                     <li className='navbar_list_items'>
-                        <button>
-                            Sign in
-                        </button>
+                        <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/login">Login</NavLink>
                     </li>
                 </ul>
             </div>

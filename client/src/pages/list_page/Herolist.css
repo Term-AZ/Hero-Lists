@@ -24,7 +24,7 @@ figure{
     background: linear-gradient(#658e85, #32685c);
     height:fit-content;
     min-height:92vh;
-    width:99vw;
+    width:100%;
     margin:0px;
 }
 
@@ -78,6 +78,7 @@ li.drop_down_list_item{
 }
 ul.publisher_list{
     column-count:5;
+    margin:0px;
 }
 select.option_dropdown{
     width:fit-content;

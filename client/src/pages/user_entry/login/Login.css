@@ -1,0 +1,29 @@
+.auth_background{
+    height:92vh;
+    width:100%;
+}
+
+.auth_scrolling_image{
+    background-image:url("../../../images/main_background.png") ;
+    
+    height:100%;
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth_info_container{
+    display: flex;
+    background-color:rgba(0, 0, 0, 0.8);
+    width:60%;
+    height:70%;
+    flex-direction: column;
+}
+
+form{
+    width: 90%;
+    height:100%;
+    padding:20px;
+    display: flex;
+    flex-direction: column;
+}

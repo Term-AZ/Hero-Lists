@@ -8,6 +8,8 @@ import Landing from './pages/Landing';
 import NavBar from './pages/reusables/NavBar/NavBar';
 import Footer from './pages/reusables/Footer/Footer';
 import Herolist from './pages/list_page/Herolist';
+import Login from './pages/user_entry/login/Login';
+import Register from './pages/user_entry/register/Register';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,8 +18,9 @@ root.render(
     <Routes>
       <Route path="/" element={<Navigate to="/superheroLists/landing"/>}/>
       <Route  path="/superheroLists" element={<Dashboard/>}>
-        <Route name="default" path="/superheroLists/landing" element={<Landing/>}>
-        </Route>
+        <Route name="default" path="/superheroLists/landing" element={<Landing/>}></Route>
+        <Route path="/superheroLists/login" element={<Login/>}/>
+        <Route path="/superheroLists/register" element={<Register/>}/>
         <Route path="/superheroLists/list" element={<Herolist/>}/>
       </Route>
     </Routes>

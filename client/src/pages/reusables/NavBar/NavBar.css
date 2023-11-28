@@ -1,5 +1,5 @@
 .nav_background{
-    width:99vw;
+    width:100%;
     height:5vh;
     background-image: linear-gradient(to right, rgb(71, 34, 34), rgb(97, 25, 25) );
     margin:0px
@@ -14,6 +14,8 @@ ul.navbar_list{
     display: flex;
     justify-content: flex-end;
     margin: 0;
+    gap:10px;
+    padding-top: 5px;
 }
 
 li.navbar_list_items{
@@ -21,6 +23,19 @@ li.navbar_list_items{
     font-size: 24px; 
     padding-right: 1vw;
     height:100%;
-    width: fit-content
+    width: fit-content;
+    border:2px;
+    border-style: solid;
+    border-color: black;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+}
+.nav_link{
+    color:black !important;
+    font-size: 1em;
+    
 }
 

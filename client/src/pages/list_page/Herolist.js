@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react'
 import './Herolist.css'
-
+import Lists from './lists/Lists'
 
 const Herolist = () =>{
     var a = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
@@ -44,26 +44,8 @@ const Herolist = () =>{
                 <select name="options" id="saved_list_options" className="option_dropdown">
                     <option value="Name">Select List</option>
                 </select>
-                <input id="new_list_name" placeholder="Enter New List Name"/>
-                <button id="create_list_btn">Create List</button>
-                <button id="delete_list_btn">Delete List</button>
             </div>
-            <h1 id="list_title"></h1>
-            <select name="sort_list" id="sort_list" className="option_dropdown">
-                <option value="Name">Name Asc</option>
-                <option value="Id">Name Dec</option>
-                <option value="Race">Race Asc</option>
-                <option value="Race">Race Dec</option>
-                <option value="Publisher">Publisher Asc</option>
-                <option value="Publisher">Publisher Dec</option>
-            </select>
-            <div className="list_view">
-                <div className="data_view">
-                    <ul className="data_list" id="data_list">
-
-                    </ul>
-                </div>
-            </div>
+            <Lists/>
             <input placeholder="Enter Hero Id" id="id_enter"/>
             <button id="add_to_list">Add</button>
             <button id="delete_from_list">Delete</button>
