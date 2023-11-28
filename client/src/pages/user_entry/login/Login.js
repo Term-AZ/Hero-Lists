@@ -1,6 +1,7 @@
 import React from 'react'
 import './Login.css'
 import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 
 const Login = () =>{
     const [inputs, setInputs] = useState({})
@@ -21,20 +22,23 @@ const Login = () =>{
                 <div className='auth_info_container'>
                     <form onSubmit={handleSubmit}>
                         <label>Email</label>
-                        <input 
+                        <input className='text_input'
                             type="text" 
                             name="email" 
                             values={inputs.email || ""} 
                             onChange={handleChange}
                         />
-                        <input 
+                        <label>Password</label>
+                        <input  className='text_input'
                             type="password" 
                             name="password" 
                             values={inputs.password || ""} 
                             onChange={handleChange}
                         />
 
-                        <input type='submit'></input>
+                        <input className='submit' type='submit' value='Login'></input>
+
+                        <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/superheroLists/register">Don't have an account? Create one here!</NavLink>
                     </form>
                 </div>
             </div>

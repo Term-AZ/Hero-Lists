@@ -11,7 +11,7 @@ const NavBar = () => {
                         <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/landing">Home</NavLink>
                     </li>
                     <li className='navbar_list_items'>
-                        <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/list">Superhero List</NavLink>
+                        <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/list">Superhero-List</NavLink>
                     </li>
                     <li className='navbar_list_items'>
                         <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/superheroLists/login">Login</NavLink>

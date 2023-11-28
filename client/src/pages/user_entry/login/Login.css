@@ -26,4 +26,26 @@ form{
     padding:20px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+label{
+    color:white;
+    font-size: 1.4em;
+    text-align: left;
+    width:50%;
+}
+input.text_input{
+    margin-bottom:30px;
+    height:8%;
+    width:50%;
+}
+input.submit{
+    margin-top:5%;
+    width:50%;
+    height:10%;
+}
+.login_nav_link{
+    margin-top:5%;
+    color:white !important
 }
