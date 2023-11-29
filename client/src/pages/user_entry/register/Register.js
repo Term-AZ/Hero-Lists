@@ -1,11 +1,12 @@
 import React from 'react'
 import '../login/Login.css'
 import {useState} from 'react'
-import {NavLink} from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 
 const Register = () =>{
     const [inputs, setInputs] = useState({})
-
+    const navigate = useNavigate()
+    const error_log = document.getElementById('error_log')
     const handleChange = (event) =>{
         const name = event.target.name
         const value = event.target.value
@@ -14,9 +15,26 @@ const Register = () =>{
 
     const handleSubmit = (event)=>{
         event.preventDefault();
-        if(inputs.password === inputs.confirm_password){
+        if(inputs.password == inputs.confirm_password){
+            fetch('http://localhost:8000/user/register',{
+                method: "POST",
+                headers:{"Content-Type":"application/json", },
+                body: JSON.stringify(inputs)
+            }).then(response =>{
+                if(response.ok){
+                    navigate("/SuperheroList/login")
+                }else{
+                    return response.json()
+                }
+            }).then(data=> {
+
+                error_log.innerText = data?.msg ? data.msg : ""
+                console.log(data)
+            })
         }else{
-            document.getElementById('error_log').innerText = "Passwords do not match!"
+            error_log.innerText = "Passwords do not match!"
+            console.log(inputs.password + "   " +inputs.confirm_password)
+            return
         }
     }
     return(
@@ -41,7 +59,7 @@ const Register = () =>{
                         <label>Confirm Password</label>
                         <input  className='text_input'
                             type="password" 
-                            name="confrim_password" 
+                            name="confirm_password" 
                             values={inputs.confirm_password || ""} 
                             onChange={handleChange}
                         />

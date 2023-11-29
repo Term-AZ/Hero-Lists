@@ -1,16 +1,19 @@
 var express = require('express');
 var cors = require('cors')
+const cookieParser = require('cookie-parser');
 var app = express();
 const db = require('../db/db.js')
 const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const saltRounds=10
 var generate_token = require('./jwt/generate_token.js')
+var generate_refresh = require('./jwt/generate_refresh.js')
 var validate_token = require('./jwt/validate_token.js')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 var validate_email = require('./validate/validate_email.js')
 var validate_password = require('./validate/validate_password.js')
+
 
 //for developer build only
 app.use(cors({
@@ -19,6 +22,7 @@ app.use(cors({
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
 // app.use("/", express.static('../client/public'))
 app.use("/",express.static('../client/build'))
 
@@ -47,7 +51,8 @@ app.listen(port, ()=>{
 // }
 
 
-
+//admin@gmail.com
+//adminpassword1!
 app.post("/user/register",(req,res)=>{
     const {email, password} = req.body
     
@@ -61,12 +66,13 @@ app.post("/user/register",(req,res)=>{
     var q = "SELECT * FROM users where email = ?"
     db.query(q, [email], (err,result)=>{
         if(err) {console.log(err); return res.status(500).send({"msg": "Error has occured"}) }
-        if(result==undefined){
+        console.log(result)
+        if(result.length == 0){
             bcrypt.genSalt(saltRounds, function(err,salt){
                 if(err) {console.log(err); return res.status(500).send({"msg": "Error has occured"}) }
                 bcrypt.hash(password, salt, function(err,hash){
-                    var dbstatement = "INSERT INTO users(email, user_password) VALUES(?,?)"
-                    db.query(dbstatement, [email,hash], (err2)=>{
+                    var dbstatement = "INSERT INTO users(email, user_password, admin) VALUES(?,?,?)"
+                    db.query(dbstatement, [email,hash, 'false'], (err2)=>{
                         if(err2) {console.log(err2);return res.status(500).send({"msg": "Error has occured"})}
                         return res.status(200).send({"msg":"User added"})
                     })
@@ -80,6 +86,26 @@ app.post("/user/register",(req,res)=>{
     // res.send(generate_token())
 })
 
+app.get('/refresh', (req, res) => {
+    const refreshToken = req.cookies['refreshToken'];
+    console.log(refreshToken)
+    if (!refreshToken) {
+      return res.status(401).send('Access Denied. No refresh token provided.');
+    }
+  
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY  );
+      const accessToken = jwt.sign({ email: decoded.email, admin:decoded.admin }, process.env.JWT_SECRET_KEY  , { expiresIn: '1h' });
+  
+    //   return res.json({jwt: accessToken})
+      res
+        .header('Authorization', accessToken)
+        .send(decoded.email);
+    } catch (error) {
+      return res.status(400).send('Invalid refresh token.');
+    }
+  });
+
 app.post('/user/login',(req,res)=>{
     const {email , password} = req.body
     var q ="SELECT * FROM users WHERE email = ?"
@@ -90,9 +116,23 @@ app.post('/user/login',(req,res)=>{
             bcrypt.compare(password, result[0].user_password, function(err, hashresult){
                 if(err){console.log(err) ; return res.status(500).send({"msg":"Error has occured"})}
                 if(hashresult){
-                    return res.json({
-                        email: email,
-                        jwt: generate_token({email: email, admin:result[0].admin})})
+                    var token = generate_token({email: email, admin:result[0].admin})
+                    return res
+                        .cookie('refreshToken', generate_refresh({email: email, admin:result[0].admin}), { httpOnly: true, sameSite: 'strict',path:"/" })
+                        .header('Authorization', token)
+                        .json({
+                                email: email,
+                                admin: result[0].admin,
+                                authorization:  token
+                            });
+
+
+
+                    // return res.json({
+                    //     email: email,
+                    //     admin: result[0].admin,
+                    //     jwt: generate_token({email: email, admin:result[0].admin}),
+                    //     jwt_refresh: generate_refresh({email: email, admin:result[0].admin})})
                 }else{
                     return res.status(400).send({"msg":"Password does not match"})
                 }

@@ -12,10 +12,11 @@ import AuthProvider from './context/AuthProvider'
 import Layout from './pages/Layout';
 import RequireAuth from './authentication/RequireAuth';
 import Admin from './pages/admin/Admin';
+import PersistLogin from './pages/user_entry/PersistLogin';
 
 const ROLES = {
-  'User': 2001,
-  'Admin': 5150
+  'User': 'User',
+  'Admin': 'Admin'
 }
 
 
@@ -30,14 +31,15 @@ function App() {
       <Route path='/SuperheroList/list' element = {<HerolistFree/>}></Route>
 
       {/* Protected Routes */}
-      <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-          <Route path='/SuperheroList/SLIST' element={<Herolist />} />
+      <Route element={<PersistLogin/>}>
+        <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route path='/SuperheroList/SLIST' element={<Herolist />} />
+        </Route>
+        
+        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+            <Route path='/SuperheroList/Admin' element={<Admin />} />
+        </Route>
       </Route>
-      
-      <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-          <Route path='/SuperheroList/Admin' element={<Admin />} />
-      </Route>
-      
     </Routes>
   );
 }

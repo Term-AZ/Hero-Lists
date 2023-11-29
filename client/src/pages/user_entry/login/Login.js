@@ -1,19 +1,55 @@
 import React from 'react'
 import './Login.css'
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { NavLink , useNavigate} from 'react-router-dom'
+import useAuth from '../../../hooks/useAuth';
+
 
 const Login = () =>{
     const [inputs, setInputs] = useState({})
-
+    const [header, setHeader] = useState()
+    const navigate = useNavigate()
+    const error_log = document.getElementById('error_log')
+    const { setAuth, persist, setPersist } = useAuth();
     const handleChange = (event) =>{
         const name = event.target.name
         const value = event.target.value
         setInputs(values => ({...values, [name]:value}))
     }
 
+    useEffect(() => {
+        localStorage.setItem("persist", persist);
+    }, [persist])
+
+    const togglePersist = () => {
+        setPersist(prev => !prev);
+    }
+
     const handleSubmit = (event)=>{
-        console.log("in here")
+        event.preventDefault();
+        
+        fetch('http://localhost:8000/user/login',{
+            method: "POST",
+            headers:{"Content-Type":"application/json", },
+            body: JSON.stringify(inputs)
+        }).then(response =>{
+    
+            if(response.ok){
+                return response.json()
+
+            }
+        }).then(data=> {
+            const em = data.email
+            const roles = data.admin
+            const token = data.authorization
+            setAuth([em,roles,token ])
+            console.log(token)
+            setInputs({})
+            setHeader()
+            console.log("after login")
+            navigate("/SuperheroList/SLIST")
+        }).catch((err)=> error_log.innerText = err)
+        
     }
 
     return(
@@ -37,6 +73,16 @@ const Login = () =>{
                         />
 
                         <input className='submit' type='submit' value='Login'></input>
+                        <p className = 'error_log' id="error_log"></p>
+                        {/* <div className="persistCheck">
+                        <input
+                            type="checkbox"
+                            id="persist"
+                            onChange={togglePersist}
+                            checked={persist}
+                        />
+                        <label htmlFor="persist">Trust This Device</label>
+                        </div> */}
 
                         <NavLink style={{"text-decoration": "none"}} className="login_nav_link" to="/SuperheroList/register">Don't have an account? Create one here!</NavLink>
                     </form>
