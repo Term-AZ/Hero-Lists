@@ -1,13 +1,37 @@
 import React, {useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+import useAuth from "../../hooks/useAuth";
+import Dropdown from '../reusables/Dropdown/Dropdown';
 import './Herolist.css'
 import Lists from './lists/Lists'
+import Populate_list from './functions/Populate_list';
 
 const Herolist = () =>{
     var a = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    const [hero_names, set_hero_names] = useState([])
-
+    const [publishers, setPublishers] = useState([])
+    const { auth } = useAuth();
+    const navigate = useNavigate()
     useEffect(()=>{
-        fetch("http://localhost:8000/superheroLists/heros/data/",{
+        fetch("/user/validateToken",{
+            method:"GET",
+            headers:{
+                "Content-Type":"application/json",
+                "authorization": auth[2]
+            }
+        }).then(response=>{
+            if(response.ok){
+                return navigate('/SuperheroList/SLIST')
+            }
+        })
+
+        // fetch("http://localhost:8000/api/superhero_data/hero_names",{
+        //     method:"GET",
+        //     headers:{
+        //         "Content-Type":"application/json",
+        //     }
+        // }).then(response=>{return response.json()}).then((data)=>set_hero_names(data))
+
+        fetch("/api/superhero_data/hero_names",{
             method:"GET",
             headers:{"Content-Type":"application/json"},
             credentials: 'include',
@@ -15,18 +39,20 @@ const Herolist = () =>{
             if(response.ok){
                 return response.json()
             }
-        }).then(data=>{
-            for(var hero of data){
-                console.log(hero.hero_name[0])
-                var heroList = document.getElementById(hero.hero_name[0].toUpperCase())
-                var li = document.createElement("li")
-                li.className = "hero_entry"
-                li.appendChild(document.createTextNode(hero.hero_name))
-                li.id = hero.hero_name
-                heroList.appendChild(li)
-            }
+        }).then(data=>{            
+            Populate_list(data)
         }).catch(err=>console.log(err))
+
+        fetch('/superherosLists/publishers',{
+            method:"GET",
+            headers:{"Content-Type":"application/json"},
+            credentials: 'include',
+        }).then(response=>{            
+            return response.json()
+        }).then(data=>{            
+            setPublishers(data)}).catch(err=>console.log(err))
     },[])
+    
 
     return(
         <div className='list_background'>
@@ -63,7 +89,17 @@ const Herolist = () =>{
             <div>
                 <div>Publishers:</div>
                 <ul className='publisher_list' id="publisher_list">
-                    
+                    {console.log(publishers)}
+                    {
+                        
+                        publishers.map((i)=>{
+                            return(
+                                <li>
+                                    {i.publisher}
+                                </li>
+                            )
+                        })
+                    }
                 </ul>
             </div>
         </div>

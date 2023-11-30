@@ -142,6 +142,15 @@ app.post('/user/login',(req,res)=>{
 })
 
 app.get('/api/superhero_data/hero_names',(req,res)=>{
+    // var q = 'SELECT superheros.id, superheros.hero_name, gender, eye_color, height, publisher, skin_color, alignment, hero_weight, ability_name from superheros inner join hero_abilities on superheros.id = hero_abilities.hero_id inner join abilities on abilities.id = hero_abilities.ability_id order by superheros.id'
+    var q = "SELECT * FROM superheros"
+    db.query(q, (err,result)=>{
+        if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+app.get('/api/superhero_data/heronames',(req,res)=>{
+    // var q = 'SELECT superheros.id, superheros.hero_name, gender, eye_color, height, publisher, skin_color, alignment, hero_weight, ability_name from superheros inner join hero_abilities on superheros.id = hero_abilities.hero_id inner join abilities on abilities.id = hero_abilities.ability_id order by superheros.id'
     var q = "SELECT id, hero_name FROM superheros"
     db.query(q, (err,result)=>{
         if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
@@ -163,12 +172,21 @@ app.get('/api/superhero_data/:hero_id',(req,res)=>{
 })
 
 app.get('/api/superhero_data/abilities/:hero_id',(req, res)=>{
-    var q = 'SELECT ability_name FROM abilities INNER JOIN hero_abilities ON hero_abilities.ability_id = abilities.id WHERE hero_abilities = ?'
-    
+    var id =  req.params.hero_id
+    //var q = 'SELECT ability_name FROM abilities INNER JOIN hero_abilities ON hero_abilities.ability_id = abilities.id WHERE hero_abilities = ?'
+    var q ='SELECT ability_name FROM abilities INNER JOIN hero_abilities ON hero_abilities.ability_id = abilities.id where hero_id = ?'
+    db.query(q, [id], (err,result)=>{
+        if(err) return res.status(500).send({"msg":"Error has occured"})
+        if(result[0]==null){
+            return res.status(400).send({"msg":"Hero not found"})
+        }else{
+            return res.json(result)
+        }
+    })
 })
 
 app.get("/user/validateToken", validate_token, (req,res)=>{
-    console.log(req.user)
+    return res.status(200).json({"msg":"true"})
     // let tokenHeaderKey = process.env.TOKEN_HEADER_KEY
     // let jwtSecretKey = process.env.JWT_SECRET_KEY
 
@@ -185,8 +203,16 @@ app.get("/user/validateToken", validate_token, (req,res)=>{
     // }
 })
 
+app.get('/superherosLists/publishers',(req,res)=>{
+    var q="SELECT DISTINCT publisher FROM superheros where publisher !=?"
+    db.query(q, [""],(err,result)=>{
+        if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
 app.get("/superheroLists/heros/data", function(req,res){
-    var q = "SELECT hero_name FROM superheros"
+    var q = "SELECT id,hero_name FROM superheros"
     db.query(q, (err,result, fields)=>{
         // res.set('Access-Control-Allow-Origin', '*');
         res.send(result)

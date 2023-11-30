@@ -1,10 +1,31 @@
 import React from 'react'
 import './Dropdown.css'
+import { useEffect, useState } from 'react'
 
-const Dropdown = () =>{
+const Dropdown = (props) =>{
+    const [data, setData] = useState({})
+
+    useEffect((i) => {
+        fetch('http://localhost:8000/api/superhero_data/"'+props.id+'"',{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"}
+        }).then(response => {return response.json()}).then(
+            (d)=> {
+                setData(d)
+            }
+        )
+    },[])
+    
     return(
-       <div>
-        
+       <div id='drop_down'>
+            <div>
+                <ul>
+                    {Object.keys(data).map((i)=>{
+
+                    })}
+                </ul>
+            </div>
        </div> 
     )
 

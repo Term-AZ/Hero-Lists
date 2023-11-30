@@ -1,10 +1,11 @@
 import React, {useState, useEffect } from 'react'
 import './Herolist.css'
 import Lists from './lists/Lists'
+import Populate_list from './functions/Populate_list';
 
 const Herolist = () =>{
     var a = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    const [hero_names, set_hero_names] = useState([])
+    const [publishers, setPublishers] = useState([])
 
     useEffect(()=>{
         fetch("http://localhost:8000/superheroLists/heros/data/",{
@@ -16,16 +17,17 @@ const Herolist = () =>{
                 return response.json()
             }
         }).then(data=>{
-            for(var hero of data){
-                console.log(hero.hero_name[0])
-                var heroList = document.getElementById(hero.hero_name[0].toUpperCase())
-                var li = document.createElement("li")
-                li.className = "hero_entry"
-                li.appendChild(document.createTextNode(hero.hero_name))
-                li.id = hero.hero_name
-                heroList.appendChild(li)
-            }
+            Populate_list(data)
         }).catch(err=>console.log(err))
+
+        fetch('/superherosLists/publishers',{
+            method:"GET",
+            headers:{"Content-Type":"application/json"},
+            credentials: 'include',
+        }).then(response=>{            
+            return response.json()
+        }).then(data=>{            
+            setPublishers(data)}).catch(err=>console.log(err))
     },[])
 
     return(
@@ -68,7 +70,15 @@ const Herolist = () =>{
             <div>
                 <div>Publishers:</div>
                 <ul className='publisher_list' id="publisher_list">
-                    
+                    {
+                        publishers.map((i)=>{
+                            return(
+                                <li>
+                                    {i.publisher}
+                                </li>
+                            )
+                        })
+                    }
                 </ul>
             </div>
         </div>

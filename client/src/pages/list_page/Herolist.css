@@ -51,7 +51,13 @@ ul.data_list{
 }
 ul.main_list{
     column-count: 3;
-    height:fit-content
+    height:fit-content;
+}
+
+li.free_list_item{
+    margin-top:10px;
+    background-color: rgba(245, 245, 220, 0.404);
+    width:80%;
 }
 
 .dropdown_container{
@@ -59,7 +65,7 @@ ul.main_list{
     position:relative;
     width:100%;
     height:fit-content;
-    transition: max-height 1s
+    transition: max-height 1s;
 }
 .dropdown_list{
     column-count:2;
