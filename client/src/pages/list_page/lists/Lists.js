@@ -7,7 +7,7 @@ const Lists = () => {
     const {auth} = useAuth()
     const [userLists, setUserLists] = useState([])
     const [newList, setNewList] = useState({})
-    const [listDescription, newListDescription] = useState({})
+    const [listDescription, newListDescription] = useState({description:""})
     const [refresh, setRefresh] = useState()
     const [refreshList, setRefreshList] = useState()
     const [listData, setListData] = useState([])
@@ -52,7 +52,7 @@ const Lists = () => {
         fetch('/create/list',{
             method:"POST",
             headers:{"Content-Type":"application/json", "authorization": auth[2]},
-            body: JSON.stringify({listname:newList['name'], listdescription: listDescription})
+            body: JSON.stringify({listname:newList['name'], listdescription: listDescription['description']})
         }).then(response => {return response.json()}).then((d)=> {setRefresh(d); console.log(d)})
     } 
 
@@ -74,13 +74,30 @@ const Lists = () => {
             headers:{"Content-Type":"application/json", "authorization": auth[2]},
             body: JSON.stringify({listid: id, heroid:document.getElementById('addhero').value})
         })
+        listChange()
+    }
+
+    const deleteHero=()=>{
+        var e = document.getElementById("saved_list_options");
+        var id = e.options[e.selectedIndex].id;
+        fetch('/list/'+id+'/'+document.getElementById('addhero').value,{
+            method:"DELETE",
+            headers:{"Content-Type":"application/json", "authorization": auth[2]},
+        })
+        listChange()
     }
 
     const listChange = () =>{
         
         var e = document.getElementById("saved_list_options");
         var id = e.options[e.selectedIndex].id;
+        var des = e.options[e.selectedIndex].description
         document.getElementById('list_title').innerHTML = e.options[e.selectedIndex].innerHTML
+        document.getElementById('new_list_description').innerHTML = des
+        if(e.options[e.selectedIndex].id=="base_choice"){
+            setListData([])
+            return
+        }
         fetch('/list/get/'+id+'',{
             method:"GET",
             headers:{"Content-Type":"application/json", "authorization": auth[2]},
@@ -89,30 +106,23 @@ const Lists = () => {
 
     if(auth[2]!=undefined){
         return(
-            
             <div>
                 <div >
-                <input id="new_list_name" placeholder="Enter New List Name" name='name' onChange={(handleChange)}values={newList||""}/>
+                    <input id="new_list_name" placeholder="Enter New List Name" name='name' onChange={(handleChange)}values={newList||""}/>
+                    <input id="new_list_description" placeholder="Enter New List Description" name='description' onChange={(handleChangeDescription)}values={listDescription||""}/>
                     <button id="create_list_btn" onClick={submitList}>Create List</button>
-                    <button id="delete_list_btn" onClick={deleteList}>Delete List</button>
                 </div>
                 <select name="options" id="saved_list_options" className="option_dropdown"onChange={listChange}>
-                        <option value="Name">Select List</option>
+                        <option value="Name" id="base_choice">Select List</option>
                         {userLists.map((i)=>{
                             return(
-                                <option id={i.id} name={i.public} selectValue={i.list_name}>{i.list_name}</option>
+                                <option id={i.id} name={i.public} description={i.description} selectValue={i.list_name}>{i.list_name}</option>
                             )
                         })}
                 </select>
+                <button id="delete_list_btn" onClick={deleteList}>Delete List</button>
                 <h1 id="list_title"></h1>
-                <select name="sort_list" id="sort_list" className="option_dropdown" >
-                    <option value="Name">Name Asc</option>
-                    <option value="Id">Name Dec</option>
-                    <option value="Race">Race Asc</option>
-                    <option value="Race">Race Dec</option>
-                    <option value="Publisher">Publisher Asc</option>
-                    <option value="Publisher">Publisher Dec</option>
-                </select>
+                <p id='list_description'></p>
                 <div className="list_view">
                     <div className="data_view">
                         <ul className="data_list" id="data_list">
@@ -129,7 +139,8 @@ const Lists = () => {
                 </div>
                 <input id='addhero'placeholder='Add/Delete hero by id'></input>
                 <button onClick={addHero}>Add</button>
-                <button  >Delete</button>
+                <button onClick={deleteHero} >Delete</button>
+                
             </div>
     )
     }else{

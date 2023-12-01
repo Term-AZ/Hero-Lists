@@ -50,7 +50,7 @@ ul.data_list{
     height: fit-content;
 }
 ul.main_list{
-    column-count: 3;
+    column-count: 2;
     height:fit-content;
 }
 
@@ -77,6 +77,8 @@ li.free_list_item{
 }
 figure.list_figure{
     height:fit-content;
+    width:90%;
+    margin:0px
 }
 li.drop_down_list_item{
     display: flex;
@@ -88,4 +90,15 @@ ul.publisher_list{
 }
 select.option_dropdown{
     width:fit-content;
+}
+li.hero_entry{
+    width: 100%;
+}
+ul.hero_sublist{
+    width:100%;
+}
+ul.search_list{
+    background-color: rgba(0, 255, 255, 0.158);
+    min-height: 100px;
+    columns: 8;
 }

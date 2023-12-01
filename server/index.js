@@ -225,13 +225,14 @@ app.get("/superheroLists/heros/data", function(req,res){
 
 app.post('/create/list', validate_token, (req,res)=>{
     console.log(req.body)
-    const {name} = req.body
+    const {listname,listdescription} = req.body
+    console.log(listname)
     var id = jwt.verify(req.headers['authorization'], process.env.JWT_SECRET_KEY).id
     
-    var q ="INSERT INTO lists(user_id, list_name)VALUES(?,?)"
-    db.query(q,[id,name],(err)=>{
+    var q ="INSERT INTO lists(user_id, list_name, description)VALUES(?,?,?)"
+    db.query(q,[id,listname,listdescription],(err)=>{
         if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
-        return res.json({'name':name})
+        return res.json({'name':listname})
     })
 })
 
@@ -240,39 +241,35 @@ app.get('/get/lists', validate_token, (req,res)=>{
     var q = 'SELECT * FROM lists where user_id = ?'
     db.query(q,[id],(err,result)=>{
         if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
-        console.log(result)
         return res.json(result)
     })
 })
 
-app.get('/superheros/search/:type/:value/:amount',(req,res)=>{
-    var type = req.params.type.replace(/[()\s-]/g,"");
-    if(type=='Name'){
-        type = 'hero_name'
+app.post('/superheros/search',(req,res)=>{
+    var {user_input,user_input_race,user_input_publisher,user_input_ability,search_amount} = req.body
+    var search = `%${user_input}%`
+    var race = `%${user_input_race}%`
+    var publisher = `%${user_input_publisher}%`
+    var ability = `%${user_input_ability}%`
+    if(search_amount ==""){
+        search_amount="1000"
     }
-    const search = `%${req.params.value}%`
-    
-    var amount = req.params.amount;
-    console.log(type)
+    var amount = parseInt(search_amount)
+
     console.log(search)
-    // console.log(amount)
+    console.log(race)
+    console.log(publisher)
+    console.log(ability)
 
-    var amount = parseInt(amount)
-    console.log(amount)
-    //do column names
-    if(type == "ability"){
-        var q ="select superheros.id, hero_name from superheros inner join hero_abilities on hero_id = superheros.id inner join abilities on hero_abilities.ability_id = abilities.id where ability_name like ? limit ? "
-        db.query(q, [search, amount], (err,result)=>{
-            if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
-            return res.json(result)
-        })
-    }
-    var q = 'SELECT id, hero_name from superheros WHERE hero_name LIKE ? LIMIT ?'
-    db.query(q, [search, amount], (err,result)=>{
-        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+    var q = 'select distinct superheros.id, superheros.hero_name from superheros inner join hero_abilities on hero_id = superheros.id inner join abilities on hero_abilities.ability_id = abilities.id where superheros.hero_name like ? and superheros.race like ? and superheros.publisher like ? and abilities.ability_name like ? limit ?'
+    db.query(q,[search,race,publisher,ability,amount],(err,result)=>{
+        if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
         return res.json(result)
     })
+
 })
+
+
 
 app.get('/list/get/:id', validate_token, (req,res)=>{
     const id = req.params.id.replace(/[()\s-]/g,"")
@@ -304,4 +301,14 @@ app.delete('/list/delete/:id', validate_token,(req,res)=>{
     })
 })
 
+app.delete('/list/:id/:heroid',(req,res)=>{
+    var list_id = req.params.id
+    var hero_id = req.params.heroid 
+
+    var q='DELETE FROM list_heros WHERE list_id = ? AND hero_id = ?'
+    db.query(q, [list_id, hero_id], (err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json({"id":list_id})
+    })
+})
 
