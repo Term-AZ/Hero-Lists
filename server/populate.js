@@ -4,6 +4,7 @@ const db = require('../db/db.js')
 
 var superhero_data = require('../data/superhero_info.json')
 var ability_data = require('../data/superhero_powers.json')
+const { exit } = require('process')
 
 
 /*
@@ -37,25 +38,25 @@ Populate hero_ability table
 populate_hero_abilities()
 
 //Search for hero id by name
-async function search_for_id(name, callback){
-    db.query("SELECT id, hero_name FROM superheros WHERE hero_name='"+name+"'",function(err,result){
+async function search_for_id(hero_stats, callback){
+    db.query("SELECT id, hero_name FROM superheros WHERE hero_name='"+hero_stats["hero_names"]+"'",function(err,result){
         if(err) throw err
-        return callback(result[0])
+        return callback(hero_stats, result[0])
     })
 }
 
 //Search for ability id by name
 async function search_for_ability_id(name, callback){
-    db.query("SELECT id FROM abilities WHERE ability_name = '"+name+"'", function(err,result){
+    db.query("SELECT id FROM abilities WHERE ability_name = '"+name["hero_name"]+"'", function(err,result){
         if(err) throw err
-        return callback(result[0])
+        return callback(name, result[0])
     })
 }
 
-async function search_for_ids(name){
+async function search_for_ids(name, callback){
     db.query("SELECT id, hero_name FROM superheros WHERE hero_name='"+name+"'",function(err,result){
         if(err) throw err
-        return result[0]
+        return callback(result[0])
     })
 }
 
@@ -63,13 +64,32 @@ async function search_for_ids(name){
 async function populate_hero_abilities(){
     for(var i of ability_data){
         // console.log(i['hero_names'])
-        search_for_id(i['hero_names'], function(id){
-            // console.log(id)
-            for(var a of Object.keys(i)){
-                console.log(a)
-                if( (i[a]==="True" || i[`\'${a}\'`]==="True" ) && id!=undefined ){
-                    // console.log(id.hero_name+"    "+ a +"   "+  i[a])
+        search_for_id(i, function(hero_stats, id){
+            console.log(id)
+            if(id==undefined){
+                return
+            }
+            for(var a in Object.keys(hero_stats)){
+                // console.log(hero_stats[Object.keys(hero_stats)[a]])
+
+                if(hero_stats[Object.keys(hero_stats)[a]]=="True"){
+                    db.query('INSERT INTO hero_abilities(hero_id, ability_id)VALUES(?,?)',[id.id, a],(err)=>{
+
+                    })
+                    
                 }
+
+                // if(a=='hero_names'){
+                //     continue
+                // }
+                // if( hero_stats[a]=="True"){
+                //     search_for_ability_id(a, function(id, ))
+                //     console.log(id.hero_name+"    "+ a +"   "+  hero_stats[a]) 
+                //     db.query('INSERT INTO hero_abilities(hero_id, ability_id)')
+                // }
+            }
+        })
+        
 
                 
 
@@ -79,11 +99,12 @@ async function populate_hero_abilities(){
                 //     console.log(i)
                 // }
                     
-            }
+        
+        }
 
             
-        })
-    }
+    //     })
+    // }
 }
 
 
@@ -116,9 +137,5 @@ Populate hero_ability table
 //     }
 //     // console.log(j)
 // }
-
-
-
-
 
 

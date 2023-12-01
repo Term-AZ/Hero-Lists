@@ -16,7 +16,7 @@ const Register = () =>{
     const handleSubmit = (event)=>{
         event.preventDefault();
         if(inputs.password == inputs.confirm_password){
-            fetch('http://localhost:8000/user/register',{
+            fetch('/user/register',{
                 method: "POST",
                 headers:{"Content-Type":"application/json", },
                 body: JSON.stringify(inputs)
@@ -47,6 +47,13 @@ const Register = () =>{
                             type="text" 
                             name="email" 
                             values={inputs.email || ""} 
+                            onChange={handleChange}
+                        />
+                        <label>Nickname</label>
+                        <input  className='text_input'
+                            type="text" 
+                            name="nickname" 
+                            values={inputs.nickname || ""} 
                             onChange={handleChange}
                         />
                         <label>Password</label>

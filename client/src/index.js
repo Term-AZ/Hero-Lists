@@ -16,8 +16,8 @@ import {AuthProvider} from './context/AuthProvider'
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-    <NavBar/>
       <AuthProvider>
+      <NavBar/>
         <Routes>
           <Route path="/*" element={<App />}/>
         </Routes>

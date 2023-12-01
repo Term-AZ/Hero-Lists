@@ -6,6 +6,7 @@ import Populate_list from './functions/Populate_list';
 const Herolist = () =>{
     var a = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
     const [publishers, setPublishers] = useState([])
+    
 
     useEffect(()=>{
         fetch("http://localhost:8000/superheroLists/heros/data/",{
@@ -30,6 +31,8 @@ const Herolist = () =>{
             setPublishers(data)}).catch(err=>console.log(err))
     },[])
 
+
+
     return(
         <div className='list_background'>
             <div className="search_container">
@@ -43,9 +46,6 @@ const Herolist = () =>{
                     <option value="Ability">Ability</option>
                 </select>
                 <button id="search_btn">Search</button>
-                <select name="options" id="saved_list_options" className="option_dropdown">
-                    <option value="Name">Select List</option>
-                </select>
             </div>
             <Lists/>
             <input placeholder="Enter Hero Id" id="id_enter"/>

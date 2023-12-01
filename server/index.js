@@ -54,7 +54,7 @@ app.listen(port, ()=>{
 //admin@gmail.com
 //adminpassword1!
 app.post("/user/register",(req,res)=>{
-    const {email, password} = req.body
+    const {email, nickname, password} = req.body
     
     if(!validate_email(email)){
         return res.status(400).send({"msg": "Please input valid email"})
@@ -71,8 +71,8 @@ app.post("/user/register",(req,res)=>{
             bcrypt.genSalt(saltRounds, function(err,salt){
                 if(err) {console.log(err); return res.status(500).send({"msg": "Error has occured"}) }
                 bcrypt.hash(password, salt, function(err,hash){
-                    var dbstatement = "INSERT INTO users(email, user_password, admin) VALUES(?,?,?)"
-                    db.query(dbstatement, [email,hash, 'false'], (err2)=>{
+                    var dbstatement = "INSERT INTO users(email, nickname, user_password, admin) VALUES(?,?,?,?)"
+                    db.query(dbstatement, [email,nickname, hash, 'false'], (err2)=>{
                         if(err2) {console.log(err2);return res.status(500).send({"msg": "Error has occured"})}
                         return res.status(200).send({"msg":"User added"})
                     })
@@ -112,15 +112,19 @@ app.post('/user/login',(req,res)=>{
     db.query(q,[email], (err,result)=>{
         if(result[0] ==null){
             return res.status(400).send({"msg":"Email not registered "})
+        }
+        if(result[0].disabled == 1){
+            return res.status(400).send({"msg":"Account has been disabled "})
         }else{
             bcrypt.compare(password, result[0].user_password, function(err, hashresult){
                 if(err){console.log(err) ; return res.status(500).send({"msg":"Error has occured"})}
                 if(hashresult){
-                    var token = generate_token({email: email, admin:result[0].admin})
+                    var token = generate_token({id:result[0].id,email: email, admin:result[0].admin})
                     return res
                         .cookie('refreshToken', generate_refresh({email: email, admin:result[0].admin}), { httpOnly: true, sameSite: 'strict',path:"/" })
                         .header('Authorization', token)
                         .json({
+                                id: result[0].id,
                                 email: email,
                                 admin: result[0].admin,
                                 authorization:  token
@@ -219,5 +223,85 @@ app.get("/superheroLists/heros/data", function(req,res){
     })
 }) 
 
+app.post('/create/list', validate_token, (req,res)=>{
+    console.log(req.body)
+    const {name} = req.body
+    var id = jwt.verify(req.headers['authorization'], process.env.JWT_SECRET_KEY).id
+    
+    var q ="INSERT INTO lists(user_id, list_name)VALUES(?,?)"
+    db.query(q,[id,name],(err)=>{
+        if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
+        return res.json({'name':name})
+    })
+})
+
+app.get('/get/lists', validate_token, (req,res)=>{
+    var id = jwt.verify(req.headers['authorization'], process.env.JWT_SECRET_KEY).id
+    var q = 'SELECT * FROM lists where user_id = ?'
+    db.query(q,[id],(err,result)=>{
+        if(err) {console.log(err); return res.status(500).send({"msg":"Error has occured"})}
+        console.log(result)
+        return res.json(result)
+    })
+})
+
+app.get('/superheros/search/:type/:value/:amount',(req,res)=>{
+    var type = req.params.type.replace(/[()\s-]/g,"");
+    if(type=='Name'){
+        type = 'hero_name'
+    }
+    const search = `%${req.params.value}%`
+    
+    var amount = req.params.amount;
+    console.log(type)
+    console.log(search)
+    // console.log(amount)
+
+    var amount = parseInt(amount)
+    console.log(amount)
+    //do column names
+    if(type == "ability"){
+        var q ="select superheros.id, hero_name from superheros inner join hero_abilities on hero_id = superheros.id inner join abilities on hero_abilities.ability_id = abilities.id where ability_name like ? limit ? "
+        db.query(q, [search, amount], (err,result)=>{
+            if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+            return res.json(result)
+        })
+    }
+    var q = 'SELECT id, hero_name from superheros WHERE hero_name LIKE ? LIMIT ?'
+    db.query(q, [search, amount], (err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.get('/list/get/:id', validate_token, (req,res)=>{
+    const id = req.params.id.replace(/[()\s-]/g,"")
+    console.log(id)
+    var q ="SELECT superheros.id, hero_name from superheros inner join list_heros on list_heros.hero_id = superheros.id WHERE list_id = ?"
+    db.query(q,[id],(err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        console.log(result)
+        return res.json(result)
+    })
+})
+
+app.post('/list/addhero',validate_token,(req,res)=>{
+    const {listid, heroid} = req.body
+    var q = "INSERT INTO list_heros(list_id, hero_id)VALUES(?,?)"
+    db.query(q,[parseInt(listid),parseInt(heroid)],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json({"msg":heroid})
+    })
+})
+
+app.delete('/list/delete/:id', validate_token,(req,res)=>{
+    console.log("in delete")
+    const id = req.params.id.replace('\"',"")
+    var q = "DELETE FROM lists WHERE id=?"
+    db.query(q,[id],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json({"id":id})
+    })
+})
 
 

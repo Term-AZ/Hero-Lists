@@ -9,7 +9,7 @@ const Populate_list = (data)=>{
                 li.id = hero.id
                 li.addEventListener('click', (e)=>{
                     Create_dropdown(e.target.id)
-                    console.log(e.target.id)
+                    // console.log(e.target.id)
                     // li.appendChild(<Dropdown/>)
                     // return(<Dropdown/>)
                 })

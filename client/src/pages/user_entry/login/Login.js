@@ -28,7 +28,7 @@ const Login = () =>{
     const handleSubmit = (event)=>{
         event.preventDefault();
         
-        fetch('http://localhost:8000/user/login',{
+        fetch('/user/login',{
             method: "POST",
             headers:{"Content-Type":"application/json", },
             body: JSON.stringify(inputs)
@@ -36,19 +36,19 @@ const Login = () =>{
     
             if(response.ok){
                 return response.json()
-
             }
         }).then(data=> {
-            const em = data.email
-            const roles = data.admin
-            const token = data.authorization
+            const em = data?.email
+            console.log(data.email)
+            const roles = data?.admin
+            const token = data?.authorization
             setAuth([em,roles,token ])
             console.log(token)
             setInputs({})
             setHeader()
             console.log("after login")
-            navigate("/SuperheroList/SLIST")
-        }).catch((err)=> error_log.innerText = err)
+            navigate("/SuperheroList/list")
+        }).catch((err)=> error_log.innerText = "Email or password do not match")
         
     }
 

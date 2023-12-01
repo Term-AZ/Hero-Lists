@@ -32,10 +32,10 @@ function App() {
 
       {/* Protected Routes */}
       <Route element={<PersistLogin/>}>
-        <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+        {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route path='/SuperheroList/SLIST' element={<Herolist />} />
         </Route>
-        
+         */}
         <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route path='/SuperheroList/Admin' element={<Admin />} />
         </Route>

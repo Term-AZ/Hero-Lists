@@ -11,16 +11,16 @@ const validate_token = (req,res,next)=>{
     const refreshToken = req.cookies['refreshToken'];
     
     if (!accessToken && !refreshToken) {
-        return res.status(401).send('Access Denied. No token provided.');
+        return res.status(401).json({"msg":'Access Denied. No token provided.'});
       }
     
       try {
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
-        req.user = decoded.user;
+        req.userid = decoded.id;
         next();
       } catch (error) {
         if (!refreshToken) {
-          return res.status(401).send('Access Denied. No refresh token provided.');
+          return res.status(401).json({"msg":'Access Denied. No refresh token provided.'});
         }
     
         try {
@@ -33,7 +33,7 @@ const validate_token = (req,res,next)=>{
             .send(decoded.user);
         } catch (error) {
             console.log(error)
-          return res.status(400).send('Invalid Token.');
+          return res.status(400).json({"msg":'Invalid Token.'});
         }
       }
     
