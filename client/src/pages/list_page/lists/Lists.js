@@ -11,12 +11,10 @@ const Lists = () => {
     const [refresh, setRefresh] = useState()
     const [refreshList, setRefreshList] = useState()
     const [listData, setListData] = useState([])
-
+    const [listState, setListState] = useState('0')
     
     useEffect(()=>{
         if(auth[2]!=undefined){
-
-        
             fetch('/get/lists',{
                 methpd:"GET",
                 headers:{"Content-Type":"application/json", "authorization": auth[2]},
@@ -29,8 +27,6 @@ const Lists = () => {
 
     useEffect(()=>{
         if(auth[2]!=undefined){
-
-
 
         }
     })
@@ -104,6 +100,12 @@ const Lists = () => {
         }).then(response=>{return response.json()}).then(data=>setListData(data))
     }
 
+    const changeListState = () =>{
+        var e = document.getElementById("saved_list_options");
+        var id = e.options[e.selectedIndex].id;
+        var state =  e.options[e.selectedIndex].name
+    }
+
     if(auth[2]!=undefined){
         return(
             <div>
@@ -111,6 +113,11 @@ const Lists = () => {
                     <input id="new_list_name" placeholder="Enter New List Name" name='name' onChange={(handleChange)}values={newList||""}/>
                     <input id="new_list_description" placeholder="Enter New List Description" name='description' onChange={(handleChangeDescription)}values={listDescription||""}/>
                     <button id="create_list_btn" onClick={submitList}>Create List</button>
+                    {listState=='0' ? 
+                        <button id="create_list_btn" onClick={changeListState}>Make public</button>
+                        :
+                        <button id="create_list_btn" onClick={changeListState}>Make private</button>
+                    }
                 </div>
                 <select name="options" id="saved_list_options" className="option_dropdown"onChange={listChange}>
                         <option value="Name" id="base_choice">Select List</option>

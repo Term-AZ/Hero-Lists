@@ -55,12 +55,7 @@ const Herolist = () =>{
         const value = event.target.value
         setUserSearch(values => ({...values, [name]:value}))
     }
-    const handleSearchAmountUpdate = (event) =>{
-        const name = event.target.name
-        const value = event.target.value
-        setSearchAmount(values => ({...values, [name]:value}))
-    }
-
+    
     const searchHeros = () => {
         // console.log(searchAmount)
         try{

@@ -301,7 +301,7 @@ app.delete('/list/delete/:id', validate_token,(req,res)=>{
     })
 })
 
-app.delete('/list/:id/:heroid',(req,res)=>{
+app.delete('/list/:id/:heroid', validate_token, (req,res)=>{
     var list_id = req.params.id
     var hero_id = req.params.heroid 
 
@@ -312,3 +312,19 @@ app.delete('/list/:id/:heroid',(req,res)=>{
     })
 })
 
+app.get('/lists/free', (req,res)=>{
+    var q = "select lists.list_name, lists.description, lists.rating, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id  group by list_id   order by lists.rating asc limit 10"
+    db.query(q,(err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.get('/lists/account', validate_token, (req,res)=>{
+    var q = "select lists.list_name, lists.description, lists.rating, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id  group by list_id   order by lists.rating asc limit 20"
+    db.query(q, (err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        console.log(result)
+        return res.json(result)
+    })
+})
