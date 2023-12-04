@@ -92,13 +92,7 @@ const Herolist = () =>{
                 <input id="user_input3" name={"user_input_ability"}placeholder="Search Ability" onChange={handleSearchUpdate} values={userSearch}/>
 
                 <input id="amount" name={"search_amount"} placeholder="Amount of Results" onChange={handleSearchUpdate} values={searchAmount}/>
-                <select name="options" id="options" className="option_dropdown">
-                    <option value="Name">Name</option>
-                    <option value="Id">Id</option>
-                    <option value="Race">Race</option>
-                    <option value="Publisher">Publisher</option>
-                    <option value="Ability">Ability</option>
-                </select>
+
                 <button id="search_btn" onClick={searchHeros}>Search</button>
 
             </div>

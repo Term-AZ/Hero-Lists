@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './Userlists.css'
 import useAuth from '../../hooks/useAuth'
-
+import { useNavigate, Navigate, Link } from 'react-router-dom'
 
 const Userlists = () => {
     const {auth} = useAuth()
     const [lists, setLists] = useState([]) 
-
+ 
     useEffect(()=>{
         if(auth[2]){
             fetch('/lists/account',{
@@ -23,11 +23,12 @@ const Userlists = () => {
         }
     },[])
 
+
     return(
         <div className='list_background'>
             <div className='mainpage_scrolling_image'>
                 <div className='listpage_info_container'>
-                    <h1>User made lists</h1>
+                    <h1 className='s'>User made lists</h1>
                     <table>
                         <tr>
                             <th>
@@ -44,6 +45,9 @@ const Userlists = () => {
                             </th>
                             <th>
                                 Rating
+                            </th>
+                            <th>
+                                Last Date Edited
                             </th>
                         </tr>
                         {
@@ -64,6 +68,12 @@ const Userlists = () => {
                                         </td>
                                         <td>
                                             {i.rating}
+                                        </td>
+                                        <td>
+                                            {i.date_edited.split("T")[0]}
+                                        </td>
+                                        <td>
+                                            <Link className='l' to={'/SuperheroList/lists/'+i.list_id+''}>View List</Link>
                                         </td>
                                     </tr>
                                 )

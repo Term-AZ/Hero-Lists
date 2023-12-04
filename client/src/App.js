@@ -14,6 +14,7 @@ import RequireAuth from './authentication/RequireAuth';
 import Admin from './pages/admin/Admin';
 import PersistLogin from './pages/user_entry/PersistLogin';
 import Userlists  from './pages/user_lists/Userlists';
+import Listdata from './pages/inlistpage/Listdata';
 
 const ROLES = {
   'User': 'User',
@@ -31,6 +32,8 @@ function App() {
       <Route path='/SuperheroList/register' element={<Register/>}></Route>
       <Route path='/SuperheroList/list' element = {<HerolistFree/>}></Route>
       <Route path='/SuperheroList/users/lists' element={<Userlists/>}></Route>
+      <Route path='/SuperheroList/lists/:id' element={<Listdata/>}></Route>
+
       {/* Protected Routes */}
       <Route element={<PersistLogin/>}>
         {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>

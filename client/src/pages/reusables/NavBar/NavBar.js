@@ -26,7 +26,7 @@ const NavBar = () => {
                             </li> 
                             :
                             <li className='navbar_list_items'>
-                                <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/SuperheroList/login" onClick={()=> setAuth([])}>Signout</NavLink>
+                                <NavLink style={{"text-decoration": "none"}} className="nav_link" to="/SuperheroList/login" onClick={()=> setAuth([])}>Logout</NavLink>
                             </li>
                     }
                 </ul>

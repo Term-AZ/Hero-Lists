@@ -43,10 +43,12 @@ const Login = () =>{
             const roles = data?.admin
             const token = data?.authorization
             setAuth([em,roles,token ])
-            console.log(token)
             setInputs({})
             setHeader()
-            console.log("after login")
+
+            if(roles=="Admin"){
+                return navigate("/SuperheroList/Admin")
+            }
             navigate("/SuperheroList/list")
         }).catch((err)=> error_log.innerText = "Email or password do not match")
         

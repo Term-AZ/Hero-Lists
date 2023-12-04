@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 var validate_email = require('./validate/validate_email.js')
 var validate_password = require('./validate/validate_password.js')
+var get_date = require('./get_date.js')
 
 
 //for developer build only
@@ -33,22 +34,6 @@ app.listen(port, ()=>{
     console.log(`Listen on port ${port}`)
 })
 
-// const verify = (req,res,next)=>{
-
-//     const authHeader = req.headers.gfg_token_header_key
-//     if(authHeader){
-//         const token = authHeader.split(" ")[1]
-//         jwt.verify(token, 'gfg_jwt_secret_key', (err,user)=>{
-//             if(err){
-//                 return res.status(403).json("Token is not valid")
-//             }
-//             req.user = user
-//             next();
-//         })
-//     }else{
-//         res.status(401).json("You are not authenticated!")
-//     }
-// }
 
 
 //admin@gmail.com
@@ -277,7 +262,6 @@ app.get('/list/get/:id', validate_token, (req,res)=>{
     var q ="SELECT superheros.id, hero_name from superheros inner join list_heros on list_heros.hero_id = superheros.id WHERE list_id = ?"
     db.query(q,[id],(err,result)=>{
         if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
-        console.log(result)
         return res.json(result)
     })
 })
@@ -287,7 +271,13 @@ app.post('/list/addhero',validate_token,(req,res)=>{
     var q = "INSERT INTO list_heros(list_id, hero_id)VALUES(?,?)"
     db.query(q,[parseInt(listid),parseInt(heroid)],(err)=>{
         if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
-        return res.json({"msg":heroid})
+        var q= "UPDATE lists SET date_edited = ? WHERE id =?"
+        const dateEdited = get_date()
+
+        db.query(q, [dateEdited, listid],(err)=>{
+            if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+            return res.json({"msg":heroid})
+        })
     })
 })
 
@@ -308,12 +298,19 @@ app.delete('/list/:id/:heroid', validate_token, (req,res)=>{
     var q='DELETE FROM list_heros WHERE list_id = ? AND hero_id = ?'
     db.query(q, [list_id, hero_id], (err)=>{
         if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
-        return res.json({"id":list_id})
+        
+        var q= "UPDATE lists SET date_edited = ? WHERE id =?"
+        const dateEdited = get_date()
+
+        db.query(q, [dateEdited, list_id],(err)=>{
+            if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+            return res.json({"id":list_id})
+        })
     })
 })
 
 app.get('/lists/free', (req,res)=>{
-    var q = "select lists.list_name, lists.description, lists.rating, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id  group by list_id   order by lists.rating asc limit 10"
+    var q = "select lists.list_name, lists.description, lists.rating,  date_edited, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id WHERE public = true group by list_id   order by lists.rating asc limit 10"
     db.query(q,(err,result)=>{
         if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
         return res.json(result)
@@ -321,10 +318,94 @@ app.get('/lists/free', (req,res)=>{
 })
 
 app.get('/lists/account', validate_token, (req,res)=>{
-    var q = "select lists.list_name, lists.description, lists.rating, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id  group by list_id   order by lists.rating asc limit 20"
+    var q = "select lists.list_name, lists.description, lists.rating, date_edited, list_id, COUNT(hero_id) as c from list_heros  inner join lists on lists.id = list_heros.list_id WHERE public = true group by list_id  order by lists.rating asc limit 20"
     db.query(q, (err,result)=>{
         if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
         console.log(result)
         return res.json(result)
+    })
+})
+
+app.get('/lists/get/fulldata/:id',(req,res)=>{
+    const list_id = req.params.id
+    var q ="SELECT * FROM superheros INNER JOIN list_heros ON superheros.id = list_heros.hero_id WHERE list_heros.list_id = ?"
+    db.query(q, [list_id], (err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.get('/lists/get/reviews/:id',(req,res)=>{
+    const list_id = req.params.id
+    var q = "SELECT list_reviews.id, review, date_created, users.nickname, dmca FROM list_reviews inner join users on users.id = list_reviews.creator_id WHERE list_reviews.list_id = ? AND hidden = false ORDER BY date_created desc"
+    db.query(q, [list_id],(err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.post('/lists/post/review/:id', validate_token, (req,res)=>{
+    const id = req.params.id
+    const review = req.body.review
+    const currentDate = get_date()
+
+    const q ="INSERT INTO list_reviews(creator_id, list_id, review, date_created)VALUES(?,?,?,?)"
+    db.query(q, [req.userid, id, review, currentDate],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.status(200).send("Success")
+    })
+})
+
+app.get('/lists/review/flag/:id', validate_token, (req,res)=>{
+    const id = req.params.id
+    const q ="UPDATE list_reviews set dmca = 1 WHERE id=?"
+    db.query(q,[id],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.status(200).send("Success")
+    })
+})
+
+app.get('/superherolist/users', validate_token, (req, res)=>{
+    if(req.admin !="Admin"){
+        return res.status(404).send("Access Denied")
+    }
+    const q ="SELECT email, nickname, id FROM users where Admin = 'User'"
+    db.query(q,(err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.get('/superherolist/user/setadmin/:id', validate_token, (req,res)=>{
+    const id = req.params.id
+    if(req.admin !="Admin"){
+        return res.status(404).send("Access Denied")
+    }
+    const q = "UPDATE users set admin=? WHERE id =?"
+    db.query(q,["Admin",id ],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.status(200).send("Success")
+    })
+})
+app.get('/lists/get/dmcalist', validate_token, (req,res)=>{
+    if(req.admin !="Admin"){
+        return res.status(400).send("Access Denied")
+    }
+    var q="SELECT list_reviews.id, review, date_created, users.nickname, dmca FROM list_reviews inner join users on users.id = list_reviews.creator_id WHERE dmca = 1 AND hidden=0 ORDER BY date_created desc"
+    db.query(q,(err,result)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.json(result)
+    })
+})
+
+app.get('/lists/set/hidden/:id', validate_token, (req,res)=>{
+    const id = req.params.id
+    if(req.admin !="Admin"){
+        return res.status(404).send("Access Denied")
+    }
+    const q="UPDATE list_reviews set hidden = 1 WHERE id=?"
+    db.query(q,[id],(err)=>{
+        if(err){ console.log(err) ;return res.status(500).send({"msg":"Error has occured"})}
+        return res.status(200).send("Success")
     })
 })

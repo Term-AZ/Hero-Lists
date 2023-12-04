@@ -5,9 +5,13 @@ td{
     color:white;
     text-align: center;
 }
-h1{
+h1.s{
     color:white;
     text-align: center;
+}
+.l{
+    text-decoration: none;
+    color: white
 }
 
 .list_background{

@@ -17,6 +17,7 @@ const validate_token = (req,res,next)=>{
       try {
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
         req.userid = decoded.id;
+        req.admin = decoded.admin
         next();
       } catch (error) {
         if (!refreshToken) {
@@ -37,36 +38,6 @@ const validate_token = (req,res,next)=>{
         }
       }
     
-
-    
-    // if(authHeader){
-    //     const token = authHeader.split(" ")[1]
-    //     jwt.verify(token, process.env.JWT_SECRET_KEY, (err,user)=>{
-    //         if(err){
-    //             return res.status(403).json("Token is not valid")
-    //         }
-    //         req.user = user
-    //         next();
-    //     })
-    // }else{
-    //     res.status(401).json("You are not authenticated!")
-    // }
 }
 
 module.exports = validate_token
-// const validate_token = (token) =>{
-//     let jwtSecretKey = process.env.JWT_SECRET_KEY
-//     try{
-//         const verified = jwt.verify(token, jwtSecretKey)
-//         if(verified){
-//             return true
-//         }else{
-//             return false
-//         }
-//     }catch(err){
-//         console.log(err)
-//         return false
-//     }
-// }
-
-// module.exports = validate_token
