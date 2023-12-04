@@ -1,6 +1,11 @@
 import axios, { axiosPrivate } from '../api/axios';
 import useAuth from './useAuth';
 
+/*
+    COPIED CODE:
+    Followed this playlist https://www.youtube.com/playlist?list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd
+*/
+
 const useRefreshToken = () => {
     const { setAuth } = useAuth();
 

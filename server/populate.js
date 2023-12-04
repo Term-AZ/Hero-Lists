@@ -12,6 +12,9 @@ Migrate Abilties
 */
 // var x = ability_data[0]
 // for(var i of Object.keys(x)){
+//     if(i=="hero_names"){
+//         continue
+//     }
 //     var q = "INSERT INTO abilities(ability_name) VALUES ('"+i+"')"
 //     db.query(q)
 //     console.log(i)
