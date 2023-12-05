@@ -6,7 +6,7 @@ const Dropdown = (props) =>{
     const [data, setData] = useState({})
 
     useEffect((i) => {
-        fetch('http://localhost:8000/api/superhero_data/"'+props.id+'"',{
+        fetch('/api/superhero_data/"'+props.id+'"',{
             method:"POST",
             headers:{
                 "Content-Type":"application/json"}

@@ -73,13 +73,13 @@ const Create_dropdown=async(id)=>{
     }
 }
 async function get_hero(id){
-    const response = await fetch(`http://localhost:8000/api/superhero_data/${id}`).then(res=>res.json()).catch((err)=>{console.log(err)})
+    const response = await fetch(`/api/superhero_data/${id}`).then(res=>res.json()).catch((err)=>{console.log(err)})
     
     return(response)
 }
 
 async function get_hero_ability(id){
-    const response = await fetch(`http://localhost:8000/api/superhero_data/abilities/${id}`).then(res=>res.json()).catch((err)=>{console.log(err)})
+    const response = await fetch(`/api/superhero_data/abilities/${id}`).then(res=>res.json()).catch((err)=>{console.log(err)})
     return(response)
 }
 
