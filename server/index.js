@@ -17,9 +17,9 @@ var get_date = require('./get_date.js')
 
 
 //for developer build only
-app.use(cors({
-    credentials: true, origin: 'http://localhost:3000'
-}))
+// app.use(cors({
+//     credentials: true, origin: 'http://localhost:3000'
+// }))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
